@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pneumonia Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="file"] {
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 15px;
+            background: #e9ffe9;
+            border-radius: 7px;
+        }
+        .result h2 {
+            margin: 10px 0;
+        }
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+            border-radius: 7px;
+        }
+        .download-link {
+            margin-top: 15px;
+            display: inline-block;
+            background: #28a745;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .download-link:hover {
+            background: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pneumonia Detection</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <br>
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if preds %}
+        <div class="result">
+            <h2>Predictions:</h2>
+            {% if preds.sigmoid.diagnosis %}
+                <p><strong>Sigmoid:</strong> {{ preds.sigmoid.diagnosis }} (Confidence: {{ preds.sigmoid.confidence|round(2) }}%)</p>
+            {% endif %}
+            {% if preds.softmax.diagnosis %}
+                <p><strong>Softmax:</strong> {{ preds.softmax.diagnosis }} (Confidence: {{ preds.softmax.confidence|round(2) }}%)</p>
+            {% endif %}
+
+            {% if img_data %}
+                <img src="data:image/png;base64,{{ img_data }}" alt="X-ray Image">
+            {% endif %}
+
+            {% if pdf_link %}
+                <br>
+                <a href="{{ pdf_link }}" class="download-link">Download PDF Report</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
